@@ -652,4 +652,84 @@ class Api_model extends CI_Model
         $query = $this->db->query("SELECT * FROM `choice`");
         return $query->result_array();
     }
+
+
+    public function list_data_jawaban($data)
+    {
+        // default
+        $data_per_page = $data['data_per_page'];
+
+        $data_pagination = array(
+            "page_no" => 0,
+            "data_found_in_page" => 0,
+            "page_available" => 0,
+            "data_found" => 0,
+            "data_shown_to_user" => 0,
+            "html_data" => ''
+        );
+
+        $this->db->select('q.id AS question_id, q.question, COUNT(DISTINCT a.id_keluarga) AS total_keluarga');
+        $this->db->from('question as q');
+        $this->db->join('answer as a', 'q.id = a.id_question', 'left');
+        $this->db->join('keluarga as k', 'a.id_keluarga = k.id', 'left');
+
+        if ($data['id_kecamatan'] != '') {
+            $this->db->where('k.id_kecamatan', $data['id_kecamatan']);
+        }
+        $this->db->group_by('q.id, q.question');
+        $data_pagination["page_no"] =  ($data['page'] <= 1) ? 1 : (int)$data['page'];
+
+        $count_query = clone $this->db;
+        $data_pagination["data_found"] = $count_query->count_all_results();
+        $data_pagination["page_available"] =    ceil($data_pagination["data_found"] / $data_per_page);
+
+
+        if ($data['page'] == '' ||  $data['page'] <= 1)
+            $this->db->limit($data_per_page, 0);
+        else
+            $this->db->limit($data_per_page, ($data_per_page * ($data_pagination["page_no"] - 1)));
+
+        $query = $this->db->get();
+        $data_pagination["data_found_in_page"]  =  $query->num_rows();
+        $data_pagination["data_shown_to_user"] = ($data_per_page * ($data_pagination["page_no"] - 1)) + 1 . " sampai " . ($data_pagination["data_found_in_page"] + ($data_per_page * ($data_pagination["page_no"] - 1))) . " dari " . $data_pagination["data_found"] . " Hasil";
+
+
+        // Pagination Configuration
+        $this->load->library('pagination');
+        $config['base_url'] = '#!';
+        $config['use_page_numbers'] = TRUE;
+        $config['uri_segment'] = 4;
+        $config['next_link']        = '>';
+        $config['prev_link']        = '<';
+        $config['full_tag_open']    = '<div class="pagging text-center"><nav><ul class="pagination justify-content-center">';
+        $config['full_tag_close']   = '</ul></nav></div>';
+        $config['num_tag_open']     = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close']    = '</span></li>';
+        $config['cur_tag_open']     = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close']    = '<span class="sr-only">(current)</span></span></li>';
+        $config['next_tag_open']    = '<li class="page-item"><span class="page-link">';
+        $config['next_tagl_close']  = '<span aria-hidden="true">&raquo;</span></span></li>';
+        $config['prev_tag_open']    = '<li class="page-item"><span class="page-link">';
+        $config['prev_tagl_close']  = '</span>Next</li>';
+        $config['first_tag_open']   = '<li class="page-item d-none"><span class="page-link">';
+        $config['first_tagl_close'] = '</span></li>';
+        $config['last_tag_open']    = '<li class="page-item d-none"><span class="page-link">';
+        $config['last_tagl_close']  = '</span></li>';
+        $config['total_rows'] = $data_pagination["data_found"];
+        $config['cur_page'] =  $data_pagination["page_no"];
+        $config['per_page'] = $data_per_page;
+        $config['num_links'] = 6;
+
+
+        $this->pagination->initialize($config);
+        $data_pagination['html_data'] = $this->pagination->create_links();
+
+        if (empty($query->result_array())) {
+            return [array('message' => 'Data Tidak Ditemukan')];
+        } else
+            return [array(
+                "filtered_data" => $query->result_array(),
+                "pagination_data" => [$data_pagination]
+            )];
+    }
 }

@@ -140,6 +140,32 @@ class Api extends REST_Controller
         }
     }
 
+    public function list_data_jawaban_post()
+    {
+        $json_data = file_get_contents('php://input');
+        $data = json_decode($json_data, true);
+
+        if ($data === null) {
+            // $this->response(['error' => 'Invalid JSON data'], 400);
+            $datas = array(
+                'id_kecamatan' => $this->input->post('id_kecamatan'),
+                'data_per_page' => $this->input->post('data_per_page'),
+                'page' => $this->input->post('page')
+            );
+
+            $r = $this->api_model->list_data_jawaban($datas);
+            $this->response($r);
+        } else {
+            $datas = array(
+                'id_kecamatan' => $data['id_kecamatan'],
+                'data_per_page' => $data['data_per_page'],
+                'page' => $data['page'],
+            );
+            $r = $this->api_model->list_data_jawaban($datas);
+            $this->response($r);
+        }
+    }
+
     public function save_kuesioner_post()
     {
         $json_data = file_get_contents('php://input');

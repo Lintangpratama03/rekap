@@ -156,4 +156,18 @@ class Home extends CI_Controller
 		$data['active_sidebar']  = "Tabel KS/KPS";
 		$this->load->view('admin/table_kskps', $data);
 	}
+
+	public function detail_pertanyaan()
+	{
+		if (!$this->session->userdata('user_name')) {
+			redirect();
+		}
+
+		$data['id_question'] = $this->uri->segment(3);
+		$data['title']  = "Detail Data Jawaban";
+		$data['title_h1']  = "Detail Data Jawaban";
+		$data['active_sidebar']  = "Tabel Jawaban";
+		// var_dump($data);
+		$this->load->view('admin/detail_jawaban', $data);
+	}
 }

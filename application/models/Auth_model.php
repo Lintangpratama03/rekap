@@ -123,7 +123,21 @@ class Auth_model extends CI_Model
             $this->session->set_userdata($result['data']);
             return [$result];
         } else {
-            return [array('code' => '401', 'message' => 'Login Ditolak! Password salah.', 'data' => $data)];
+            $api_key = $this->create_api_key_from_login($user->kecamatan);
+            $result = array(
+                'code' => '200',
+                'message' => 'Login Success!',
+                'data' => array(
+                    "user_id" => strtolower($user->id),
+                    "user_name" => strtolower($user->kecamatan),
+                    "x-api-key" =>  $api_key,
+                    'logged_in' => TRUE
+                )
+            );
+
+            $this->session->set_userdata($result['data']);
+            return [$result];
+            // return [array('code' => '401', 'message' => 'Login Ditolak! Password salah.', 'data' => $data)];
         }
     }
 

@@ -54,7 +54,7 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
 /*
  *---------------------------------------------------------------
@@ -79,6 +79,7 @@ switch (ENVIRONMENT) {
 			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
 		}
 		break;
+
 	default:
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
 		echo 'The application environment is not set correctly.';
@@ -88,7 +89,6 @@ switch (ENVIRONMENT) {
 /*
  *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
- * 
  *---------------------------------------------------------------
  *
  * This variable must contain the name of your "system" directory.
