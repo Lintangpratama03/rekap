@@ -20,6 +20,12 @@ class Api extends REST_Controller
         $r = $this->api_model->list_kecamatan();
         $this->response($r);
     }
+    public function list_pertanyaan_get()
+    {
+        $id = $this->input->get('id', TRUE);
+        $r = $this->api_model->list_pertanyaan($id);
+        $this->response($r);
+    }
 
     public function list_desa_get()
     {
@@ -144,7 +150,6 @@ class Api extends REST_Controller
     {
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
-
         if ($data === null) {
             // $this->response(['error' => 'Invalid JSON data'], 400);
             $datas = array(
@@ -164,6 +169,7 @@ class Api extends REST_Controller
             $r = $this->api_model->list_data_jawaban($datas);
             $this->response($r);
         }
+        // var_dump($datas);
     }
 
     public function save_kuesioner_post()
