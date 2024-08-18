@@ -50,7 +50,7 @@ class Api_model extends CI_Model
             $this->db->join('answer a', 'a.id_question = c.id_question AND a.choice = c.choice', 'left');
             $this->db->join('keluarga k', 'k.id = a.id_keluarga');
             $this->db->where('c.id_question', $id_question);
-            $this->db->where('k.id_kecamatan', 3506010);
+            $this->db->where('k.id_kecamatan', $id_kecamatan);
             $this->db->group_by('c.choice');
             $this->db->order_by('total', 'DESC');
             $query = $this->db->get();
@@ -62,7 +62,7 @@ class Api_model extends CI_Model
             $this->db->join('keluarga k', 'k.id = a.id_keluarga');
             $this->db->where('c.id_question', $id_question);
             $this->db->where("JSON_CONTAINS(a.choice, JSON_QUOTE(c.choice), '$')");
-            $this->db->where('k.id_kecamatan', 3506010);
+            $this->db->where('k.id_kecamatan', $id_kecamatan);
             $this->db->group_by('c.choice');
             $this->db->order_by('total', 'DESC');
             $query = $this->db->get();
