@@ -57,6 +57,8 @@ $route['rekapitulasi_kskps']  = 'home/rekapitulasi_kskps';
 $route['table_kskps']  = 'home/table_kskps';
 $route['table_kskps/detail_keluarga/(:any)']  = 'home/detail_kskps/$1';
 
+$route['rekapitulasi_jawaban/detail/(:any)']  = 'home/detail_question/$1';
+
 
 $route['default_controller'] = 'home/index';
 $route['404_override'] = '';
