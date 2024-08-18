@@ -73,6 +73,14 @@ class Api extends REST_Controller
         $this->response($r);
     }
 
+    public function detail_data_pertanyaan_post() //jihan
+    {
+        $id_question = $this->input->post('id_question');
+
+        $r = $this->api_model->detail_data_pertanyaan($id_question);
+        $this->response($r);
+    }
+
 
     public function detail_data_kskps_for_edit_get()
     {

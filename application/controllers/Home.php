@@ -117,6 +117,24 @@ class Home extends CI_Controller
 		$this->load->view('admin/rekapitulasi_kskps', $data);
 	}
 
+	public function detail_question()
+	{
+		if (!$this->session->userdata('user_name')) {
+			redirect();
+		}
+		$this->load->model('api_model');
+		$this->load->database();
+
+		$data['id_question'] = $this->uri->segment(3);
+
+		$data['pertanyaan'] = $this->api_model->list_pertanyaan_id($data['id_question']);
+
+		$data['title']  = "Detail pertanyaan";
+		$data['title_h1']  = "Detail pertanyaan";
+		$data['active_sidebar']  = "Detail pertanyaan";
+		$this->load->view('admin/detail_question', $data);
+	}
+
 	public function detail_kskps()
 	{
 		if (!$this->session->userdata('user_name')) {

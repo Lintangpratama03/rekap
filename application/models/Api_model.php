@@ -17,6 +17,66 @@ class Api_model extends CI_Model
         return $query->result_array();
     }
 
+    public function list_pertanyaan_id($id_question)
+    {
+        $this->db->select('*');
+        $this->db->from('question');
+        $this->db->where('id', $id_question);
+
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    public function detail_data_pertanyaan($id_question)
+    {
+        $id_kecamatan = 3506010;
+
+        $this->db->select('*');
+        $this->db->from('question');
+        $this->db->where('id', $id_question);
+        $cek_data = $this->db->get()->row_array();
+
+        if ($cek_data['type'] == 'SINGLE_ANSWER') {
+            // dengan limit
+            // $this->db->select('pilihan, COUNT(pilihan) AS total');
+            // $this->db->from('(SELECT c.choice AS pilihan FROM choice_v2 c LEFT JOIN answer a ON a.id_question = c.id_question AND a.choice = c.choice WHERE c.id_question = ' . $id_question . ' LIMIT 5) AS limited_choices');
+            // $this->db->group_by('pilihan');
+            // $this->db->order_by('total', 'DESC');
+            // $query = $this->db->get();
+
+            // tanpa limit
+            $this->db->select('c.choice AS pilihan, COUNT(a.choice) AS total');
+            $this->db->from('choice_v2 c');
+            $this->db->join('answer a', 'a.id_question = c.id_question AND a.choice = c.choice', 'left');
+            $this->db->join('keluarga k', 'k.id = a.id_keluarga');
+            $this->db->where('c.id_question', $id_question);
+            $this->db->where('k.id_kecamatan', $id_kecamatan);
+            $this->db->group_by('c.choice');
+            $this->db->order_by('total', 'DESC');
+            $query = $this->db->get();
+        } else {
+            // tanpa limit
+            $this->db->select('c.choice AS pilihan, COUNT(*) AS total');
+            $this->db->from('choice_v2 c');
+            $this->db->join('answer a', 'a.id_question = c.id_question', 'inner');
+            $this->db->join('keluarga k', 'k.id = a.id_keluarga');
+            $this->db->where('c.id_question', $id_question);
+            $this->db->where("JSON_CONTAINS(a.choice, JSON_QUOTE(c.choice), '$')");
+            $this->db->where('k.id_kecamatan', $id_kecamatan);
+            $this->db->group_by('c.choice');
+            $this->db->order_by('total', 'DESC');
+            $query = $this->db->get();
+
+            // dengan limit
+            // $this->db->select('pilihan, COUNT(pilihan) AS total');
+            // $this->db->from('(SELECT c.choice AS pilihan FROM choice_v2 c LEFT JOIN answer a ON a.id_question = c.id_question AND JSON_CONTAINS(a.choice, JSON_QUOTE(c.choice), \'$\') WHERE c.id_question = ' . $this->db->escape($id_question) . ' LIMIT 1000) AS limited_choices');
+            // $this->db->group_by('pilihan');
+            // $this->db->order_by('total', 'DESC');
+            // $query = $this->db->get();
+        }
+        return $query->result_array();
+    }
+
     public function list_kecamatan()
     {
         $query =  $this->db->get('kecamatan');
