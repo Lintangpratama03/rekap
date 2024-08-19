@@ -189,12 +189,17 @@ class Home extends CI_Controller
 		if (!$this->session->userdata('user_name')) {
 			redirect();
 		}
+		$this->load->library('pagination');
+		$this->load->database();
+		$this->load->model('api_model');
 
-		$data['id_question'] = $this->uri->segment(3);
+		$list_kecamatan = $this->api_model->list_kecamatan();
+		$data['list_kecamatan'] = ($list_kecamatan);
+
 		$data['title']  = "Detail Data Jawaban";
 		$data['title_h1']  = "Detail Data Jawaban";
 		$data['active_sidebar']  = "Tabel Jawaban";
 		// var_dump($data);
-		$this->load->view('admin/detail_jawaban', $data);
+		$this->load->view('admin/rekapitulasi_jawaban', $data);
 	}
 }

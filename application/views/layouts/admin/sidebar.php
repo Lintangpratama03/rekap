@@ -17,6 +17,9 @@
         <li <?php if ($active_sidebar == 'Rekapitulasi KS/KPS') echo "class='active'"; ?>>
             <a href="<?php echo base_url(); ?>rekapitulasi_kskps"><img src="<?php echo base_url(); ?>assets/img/icon/sidebar-icon-paper-folder.svg" /> Rekapitulasi KS/KPS</a>
         </li>
+        <li <?php if ($active_sidebar == 'Tabel Jawaban') echo "class='active'"; ?>>
+            <a href="<?php echo base_url(); ?>rekapitulasi_jawaban"><img src="<?php echo base_url(); ?>assets/img/icon/sidebar-icon-paper-folder.svg" /> Rekapitulasi Jawaban</a>
+        </li>
         <li <?php if ($active_sidebar == 'Tabel KS/KPS') echo "class='active'"; ?>>
             <a href="<?php echo base_url(); ?>table_kskps"><img src="<?php echo base_url(); ?>assets/img/icon/sidebar-icon-table.svg" /> Tabel KS/KPS</a>
         </li>

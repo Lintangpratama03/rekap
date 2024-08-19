@@ -81,6 +81,12 @@ class Api_model extends CI_Model
         return $query->result_array();
     }
 
+    public function list_pertanyaan()
+    {
+        $query = $this->db->get('question');
+        return $query->result_array();
+    }
+
     public function list_desa($id)
     {
         $this->db->from('desa');
@@ -726,17 +732,20 @@ class Api_model extends CI_Model
             "html_data" => ''
         );
 
-        $this->db->select('q.id AS question_id, q.question, COUNT(DISTINCT a.id_keluarga) AS total_keluarga');
+        // $this->db->select('q.id AS question_id, q.question, COUNT(DISTINCT a.id_keluarga) AS total_keluarga');
+        $this->db->select('q.id, q.question');
         $this->db->from('question as q');
-        $this->db->join('answer as a', 'q.id = a.id_question', 'left');
-        $this->db->join('keluarga as k', 'a.id_keluarga = k.id', 'left');
+        // $this->db->join('answer as a', 'q.id = a.id_question', 'left');
+        // $this->db->join('keluarga as k', 'a.id_keluarga = k.id', 'left');
 
-        if ($data['id_kecamatan'] != '') {
-            $this->db->where('k.id_kecamatan', $data['id_kecamatan']);
-        }
+        // if ($data['id_kecamatan'] != '') {
+        //     $this->db->where('k.id_kecamatan', $data['id_kecamatan']);
+        // }
         $this->db->group_by('q.id, q.question');
         $data_pagination["page_no"] =  ($data['page'] <= 1) ? 1 : (int)$data['page'];
-
+        // var_dump($data_pagination);
+        // die();
+        $data_pagination["kecamatan"] = $data['id_kecamatan'];
         $count_query = clone $this->db;
         $data_pagination["data_found"] = $count_query->count_all_results();
         $data_pagination["page_available"] =    ceil($data_pagination["data_found"] / $data_per_page);
@@ -781,7 +790,6 @@ class Api_model extends CI_Model
 
         $this->pagination->initialize($config);
         $data_pagination['html_data'] = $this->pagination->create_links();
-
         if (empty($query->result_array())) {
             return [array('message' => 'Data Tidak Ditemukan')];
         } else
