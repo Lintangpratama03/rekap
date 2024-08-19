@@ -134,7 +134,8 @@ class Home extends CI_Controller
 		$list_dusun = $this->api_model->list_dusun('');
 		$data['list_dusun'] = ($list_dusun);
 
-		$data['id_question'] = $this->uri->segment(3);
+		$encodedId = $this->uri->segment(3);
+		$data['id_question'] = base64_decode($encodedId);
 
 		$data['pertanyaan'] = $this->api_model->list_pertanyaan_id($data['id_question']);
 

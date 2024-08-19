@@ -43,39 +43,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-2">
-                                        <div class="form-floating">
-                                            <select class="form-control selectpicker" id="dataDesa" name="dataDesa" data-live-search="true">
-                                                <option value="">Semua Desa</option>
-                                            </select>
-                                            <label for="floatingSelect">Desa</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <div class="form-floating">
-                                            <select class="form-control selectpicker" id="dataDusun" name="dataDusun" data-live-search="true">
-                                                <option value="">Semua Dusun</option>
-                                            </select>
-                                            <label for="floatingSelect">Dusun</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-1">
-                                        <label for="dataRt"></label>
-                                        <input type="number" class="form-control" id="dataRt" name="dataRt" placeholder="RT" oninput="maxLengthCheck(this)" type="number" maxlength="3" min="1" max="999">
-                                    </div>
-
-                                    <div class="col-1">
-                                        <label for="dataRw"></label>
-                                        <input type="number" class="form-control" id="dataRw" name="dataRw" placeholder="RW" oninput="maxLengthCheck(this)" type="number" maxlength="3" min="1" max="999">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-
                                     <div class="col-3 pt-3">
-                                        <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2 text-light w-50" style="background-color: #11152A; border: none; border-radius: 12px; margin-right: .5rem;">Telusuri</button>
+                                        <button class="btn btn-lg btn-danger btn-login text-uppercase fw-bold mb-2 text-light w-50" style="background-color: #ffa800; border: none; border-radius: 12px; margin-right: .5rem;" onclick="filter_data()">Telusuri</button>
                                     </div>
                                 </div>
                                 </form>
@@ -115,8 +84,6 @@
         var table = null;
         var currentRequest = null;
         var objectToPopulateDataKecamatan = <?php echo json_encode($list_kecamatan, JSON_HEX_QUOT); ?>;
-        var objectToPopulateDataDesa = <?php echo json_encode($list_desa, JSON_HEX_QUOT); ?>;
-        var objectToPopulateDataDusun = <?php echo json_encode($list_dusun, JSON_HEX_QUOT); ?>;
 
         // POPULATE SELECT DATA FROM PHP CONTROLLER
         $.each(objectToPopulateDataKecamatan, function(index, item) {
@@ -136,99 +103,19 @@
             }
         });
 
-        $.each(objectToPopulateDataDesa, function(index, item) {
-            $('#dataDesa').append($('<option>', {
-                value: item.id,
-                text: item.desa,
-                'data-kecamatan-id': item.id_kecamatan
-            }));
-        });
-
-        $.each(objectToPopulateDataDusun, function(index, item) {
-            $('#dataDusun').append($('<option>', {
-                value: item.id,
-                text: item.dusun,
-                'data-desa-id': item.id_desa
-            }));
-        });
-
-        $('#dataKecamatan').on('change', function(e) {
-            const id_kecamatan = this.value
-            $('#dataDesa').empty();
-            $('#dataDesa').append($('<option>', {
-                value: '',
-                text: 'Semua Desa'
-            }));
-
-            if (id_kecamatan == 0) {
-                $.each(objectToPopulateDataDesa, function(index, item) {
-                    $('#dataDesa').append($('<option>', {
-                        value: item.id,
-                        text: item.desa,
-                        'data-kecamatan-id': item.id_kecamatan
-                    }));
-                });
-
-
-                $.each(objectToPopulateDataDusun, function(index, item) {
-                    $('#dataDusun').append($('<option>', {
-                        value: item.id,
-                        text: item.dusun,
-                        'data-desa-id': item.id_desa
-                    }));
-                });
-            } else {
-                $.each(objectToPopulateDataDesa, function(index, item) {
-                    if (item.id_kecamatan == id_kecamatan) {
-                        $('#dataDesa').append($('<option>', {
-                            value: item.id,
-                            text: item.desa,
-                            'data-kecamatan-id': item.id_kecamatan
-                        }));
-                    }
-                });
-            }
-            $('#dataDesa').selectpicker('refresh');
-        });
-
-
-        $('#dataDesa').on('change', function(e) {
-            const id_desa = this.value
-            $('#dataDusun').empty();
-            $('#dataDusun').append($('<option>', {
-                value: '',
-                text: 'Semua Dusun'
-            }));
-
-            if (id_desa == 0) {
-                $.each(objectToPopulateDataDusun, function(index, item) {
-                    $('#dataDusun').append($('<option>', {
-                        value: item.id,
-                        text: item.dusun,
-                        'data-desa-id': item.id_desa
-                    }));
-                });
-            } else {
-                $.each(objectToPopulateDataDusun, function(index, item) {
-                    if (item.id_desa == id_desa) {
-                        $('#dataDusun').append($('<option>', {
-                            value: item.id,
-                            text: item.dusun,
-                            'data-desa-id': item.id_desa
-                        }));
-                    }
-                });
-            }
-            $('#dataDusun').selectpicker('refresh');
-        });
-
         $(document).ready(function() {
-            console.log($('#dataKecamatan').val());
             loadData({
                 id_question: '<?= $pertanyaan['id']; ?>',
                 id_kecamatan: $('#dataKecamatan').val()
             });
         });
+
+        function filter_data() {
+            loadData({
+                id_question: '<?= $pertanyaan['id']; ?>',
+                id_kecamatan: $('#dataKecamatan').val()
+            });
+        }
 
         function loadData(data) {
             var rowData = "";

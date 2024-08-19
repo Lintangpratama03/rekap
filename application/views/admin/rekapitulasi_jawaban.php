@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-11 mx-auto" style="position: relative;">
 
-                        <div class="col text-right">
+                        <div class="col">
                             <h1 class="content-title"><?php echo $title_h1; ?></h1>
 
                             <h3 class="mt-4 text-left d-none">Cari Berdasarkan</h3>
@@ -51,50 +51,50 @@
 
 
 
-                        <div class="col text-right mb-5">
-                            <p class="pak-bup-top-right mb-10">
-                                <img src="<?php echo base_url(); ?>assets/img/main/logo-dp2kbp3a-kab-kediri-circle.png" width="62" />
-                                <img src="<?php echo base_url(); ?>assets/img/main/logo-mas-bup-merah-kab-kediri.png" width="75" />
-                            </p>
-                        </div>
+                        <!-- <div class="col text-right mb-5"> -->
+                        <p class="pak-bup-top-right mb-10">
+                            <img src="<?php echo base_url(); ?>assets/img/main/logo-dp2kbp3a-kab-kediri-circle.png" width="62" />
+                            <img src="<?php echo base_url(); ?>assets/img/main/logo-mas-bup-merah-kab-kediri.png" width="75" />
+                        </p>
+                    </div>
 
 
-                        <div class="row mt-10">
-                            <div class="col-12 mx-auto my-5">
-                                <p class="d-none">Tampilkan <select id="dataPerPage">
-                                        <option value="100">100</option>
-                                        <option value="500">500</option>
-                                        <option value="1000">1000</option>
-                                    </select> Data Per Halaman </p>
+                    <div class="row mt-10">
+                        <div class="col-12 mx-auto my-5">
+                            <p class="d-none">Tampilkan <select id="dataPerPage">
+                                    <option value="100">100</option>
+                                    <option value="500">500</option>
+                                    <option value="1000">1000</option>
+                                </select> Data Per Halaman </p>
 
-                                <table id="resultFilter" class="display table my-3">
-                                    <thead class="table-dark text-center">
-                                        <tr>
-                                            <th width="10%">No.</th>
-                                            <th width="80%">Pertanyaan</th>
-                                            <th width="10%">Aksi</th>
-                                        </tr>
+                            <table id="resultFilter" class="display table my-3">
+                                <thead class="table-dark text-center">
+                                    <tr>
+                                        <th width="10%">No.</th>
+                                        <th width="80%">Pertanyaan</th>
+                                        <th width="10%">Aksi</th>
+                                    </tr>
 
-                                    </thead>
-                                    <tbody>
+                                </thead>
+                                <tbody>
 
-                                    </tbody>
-                                </table>
-                                <div class="text-center" id="ajax_status">
-                                    <div class="spinner-border" role="status" id="loading">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
+                                </tbody>
+                            </table>
+                            <div class="text-center" id="ajax_status">
+                                <div class="spinner-border" role="status" id="loading">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
-
-                                <div class="col-12 paginationUnderResultTable" id="pagination">
-
-                                </div>
-                                <p id="pagination_text" class="text-muted lead text-center" style="font-size: 0.75rem;"></p>
                             </div>
+
+                            <div class="col-12 paginationUnderResultTable" id="pagination">
+
+                            </div>
+                            <p id="pagination_text" class="text-muted lead text-center" style="font-size: 0.75rem;"></p>
                         </div>
                     </div>
                 </div>
-            </section>
+        </div>
+        </section>
         </div>
     </main>
 
@@ -211,7 +211,7 @@
                             oneRowData += "<tr>";
                             oneRowData += "<td>" + data_detail.id + "</td>";
                             oneRowData += "<td>" + data_detail.question + "</td>";
-                            oneRowData += "<td>" + '<button class="btn btn-outline-primary" data-toggle="modal" data-target=".bs-example-modal-lg" title="Edit Data" onclick="redirectToDetail(' + data_detail.id + ')">Detail</button>' + "</td>";
+                            oneRowData += "<td>" + '<button class="btn btn-warning" data-toggle="modal" data-target=".bs-example-modal-lg" title="Edit Data" onclick="redirectToDetail(' + data_detail.id + ')">Detail</button>' + "</td>";
                             oneRowData += "</tr>";
                         } else {
                             console.error("Unexpected data structure:", data);
