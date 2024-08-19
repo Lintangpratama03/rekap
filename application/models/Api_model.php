@@ -27,10 +27,8 @@ class Api_model extends CI_Model
         return $query->row_array();
     }
 
-    public function detail_data_pertanyaan($id_question)
+    public function detail_data_pertanyaan($id_question, $id_kecamatan)
     {
-        $id_kecamatan = 3506010;
-
         $this->db->select('*');
         $this->db->from('question');
         $this->db->where('id', $id_question);

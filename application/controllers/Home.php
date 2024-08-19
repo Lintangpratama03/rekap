@@ -125,6 +125,15 @@ class Home extends CI_Controller
 		$this->load->model('api_model');
 		$this->load->database();
 
+		$list_kecamatan = $this->api_model->list_kecamatan();
+		$data['list_kecamatan'] = ($list_kecamatan);
+
+		$list_desa = $this->api_model->list_desa('');
+		$data['list_desa'] = ($list_desa);
+
+		$list_dusun = $this->api_model->list_dusun('');
+		$data['list_dusun'] = ($list_dusun);
+
 		$data['id_question'] = $this->uri->segment(3);
 
 		$data['pertanyaan'] = $this->api_model->list_pertanyaan_id($data['id_question']);

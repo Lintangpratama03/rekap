@@ -32,6 +32,53 @@
                         <div class="row">
                             <div class="col-12 mx-auto">
                                 <h6 class="mt-4">Berikut adalah detail jawaban dari pertanyaan <br><b>"<?= $pertanyaan['question'] ?>"</b> <br> Tipe : <b><?= $pertanyaan['type'] ?></b></h6>
+
+                                <h3 class="mt-4">Cari Berdasarkan</h3>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="form-floating">
+                                            <select class="form-control selectpicker " id="dataKecamatan" name="dataKecamatan" data-live-search="true">
+                                            </select>
+                                            <label for="floatingSelect">Kecamatan</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-2">
+                                        <div class="form-floating">
+                                            <select class="form-control selectpicker" id="dataDesa" name="dataDesa" data-live-search="true">
+                                                <option value="">Semua Desa</option>
+                                            </select>
+                                            <label for="floatingSelect">Desa</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-2">
+                                        <div class="form-floating">
+                                            <select class="form-control selectpicker" id="dataDusun" name="dataDusun" data-live-search="true">
+                                                <option value="">Semua Dusun</option>
+                                            </select>
+                                            <label for="floatingSelect">Dusun</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-1">
+                                        <label for="dataRt"></label>
+                                        <input type="number" class="form-control" id="dataRt" name="dataRt" placeholder="RT" oninput="maxLengthCheck(this)" type="number" maxlength="3" min="1" max="999">
+                                    </div>
+
+                                    <div class="col-1">
+                                        <label for="dataRw"></label>
+                                        <input type="number" class="form-control" id="dataRw" name="dataRw" placeholder="RW" oninput="maxLengthCheck(this)" type="number" maxlength="3" min="1" max="999">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-3 pt-3">
+                                        <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2 text-light w-50" style="background-color: #11152A; border: none; border-radius: 12px; margin-right: .5rem;">Telusuri</button>
+                                    </div>
+                                </div>
+                                </form>
                             </div>
                             <div class="col-12 mx-auto">
                                 <table id="table-data" class="display table mt-2">
@@ -43,14 +90,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- <?php $no = 1; ?>
-                                        <?php foreach ($data as $item): ?>
-                                            <tr class="text-center">
-                                                <td><?= $no++; ?></td>
-                                                <td><?= htmlspecialchars($item['pilihan']); ?></td>
-                                                <td><?= htmlspecialchars($item['total'] ?? 0); ?></td>
-                                            </tr>
-                                        <?php endforeach; ?> -->
+
                                     </tbody>
 
                                 </table>
@@ -59,11 +99,6 @@
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
                                 </div>
-
-                            </div>
-                            <div class="col-6 pt-3 mx-auto text-center">
-                                <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2 text-light w-50" type="button" style="background-color: #11152A; border: none; border-radius: 12px; margin-right: .5rem;">Kembali</button>
-                                <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2 text-dark" type="button" style="background-color: #FFA800; border: none; border-radius: 12px;" onclick="ExportToExcel('xlsx')">Cetak</button>
 
                             </div>
                         </div>
@@ -79,10 +114,119 @@
     <script>
         var table = null;
         var currentRequest = null;
+        var objectToPopulateDataKecamatan = <?php echo json_encode($list_kecamatan, JSON_HEX_QUOT); ?>;
+        var objectToPopulateDataDesa = <?php echo json_encode($list_desa, JSON_HEX_QUOT); ?>;
+        var objectToPopulateDataDusun = <?php echo json_encode($list_dusun, JSON_HEX_QUOT); ?>;
+
+        // POPULATE SELECT DATA FROM PHP CONTROLLER
+        $.each(objectToPopulateDataKecamatan, function(index, item) {
+            if (item.kecamatan == '<?php echo strtoupper($this->session->userdata('user_name')); ?>') {
+                $('#dataKecamatan').append($('<option>', {
+                    value: item.id,
+                    text: item.kecamatan,
+                    selected: true
+                }));
+
+
+            } else {
+                $('#dataKecamatan').append($('<option>', {
+                    value: item.id,
+                    text: item.kecamatan
+                }));
+            }
+        });
+
+        $.each(objectToPopulateDataDesa, function(index, item) {
+            $('#dataDesa').append($('<option>', {
+                value: item.id,
+                text: item.desa,
+                'data-kecamatan-id': item.id_kecamatan
+            }));
+        });
+
+        $.each(objectToPopulateDataDusun, function(index, item) {
+            $('#dataDusun').append($('<option>', {
+                value: item.id,
+                text: item.dusun,
+                'data-desa-id': item.id_desa
+            }));
+        });
+
+        $('#dataKecamatan').on('change', function(e) {
+            const id_kecamatan = this.value
+            $('#dataDesa').empty();
+            $('#dataDesa').append($('<option>', {
+                value: '',
+                text: 'Semua Desa'
+            }));
+
+            if (id_kecamatan == 0) {
+                $.each(objectToPopulateDataDesa, function(index, item) {
+                    $('#dataDesa').append($('<option>', {
+                        value: item.id,
+                        text: item.desa,
+                        'data-kecamatan-id': item.id_kecamatan
+                    }));
+                });
+
+
+                $.each(objectToPopulateDataDusun, function(index, item) {
+                    $('#dataDusun').append($('<option>', {
+                        value: item.id,
+                        text: item.dusun,
+                        'data-desa-id': item.id_desa
+                    }));
+                });
+            } else {
+                $.each(objectToPopulateDataDesa, function(index, item) {
+                    if (item.id_kecamatan == id_kecamatan) {
+                        $('#dataDesa').append($('<option>', {
+                            value: item.id,
+                            text: item.desa,
+                            'data-kecamatan-id': item.id_kecamatan
+                        }));
+                    }
+                });
+            }
+            $('#dataDesa').selectpicker('refresh');
+        });
+
+
+        $('#dataDesa').on('change', function(e) {
+            const id_desa = this.value
+            $('#dataDusun').empty();
+            $('#dataDusun').append($('<option>', {
+                value: '',
+                text: 'Semua Dusun'
+            }));
+
+            if (id_desa == 0) {
+                $.each(objectToPopulateDataDusun, function(index, item) {
+                    $('#dataDusun').append($('<option>', {
+                        value: item.id,
+                        text: item.dusun,
+                        'data-desa-id': item.id_desa
+                    }));
+                });
+            } else {
+                $.each(objectToPopulateDataDusun, function(index, item) {
+                    if (item.id_desa == id_desa) {
+                        $('#dataDusun').append($('<option>', {
+                            value: item.id,
+                            text: item.dusun,
+                            'data-desa-id': item.id_desa
+                        }));
+                    }
+                });
+            }
+            $('#dataDusun').selectpicker('refresh');
+        });
 
         $(document).ready(function() {
+            console.log($('#dataKecamatan').val());
             loadData({
-                id_question: '<?= $pertanyaan['id']; ?>'
+                id_question: '<?= $pertanyaan['id']; ?>',
+                id_kecamatan: $('#dataKecamatan').val()
             });
         });
 

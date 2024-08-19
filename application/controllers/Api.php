@@ -70,8 +70,9 @@ class Api extends REST_Controller
     public function detail_data_pertanyaan_post() //jihan
     {
         $id_question = $this->input->post('id_question');
+        $id_kecamatan = $this->input->post('id_kecamatan');
 
-        $r = $this->api_model->detail_data_pertanyaan($id_question);
+        $r = $this->api_model->detail_data_pertanyaan($id_question, $id_kecamatan);
         $this->response($r);
     }
 
