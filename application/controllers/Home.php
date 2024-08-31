@@ -35,11 +35,124 @@ class Home extends CI_Controller
 			$data['title']  = "In Kelud - Mas Bup";
 			$this->load->view('home/login', $data);
 		} else {
+			$this->load->database();
+			$this->load->model('api_model');
+
+			$list_kecamatan = $this->api_model->list_kecamatan();
+			$data['list_kecamatan'] = ($list_kecamatan);
+
+			$list_desa = $this->api_model->list_desa('');
+			$data['list_desa'] = ($list_desa);
+
+			$list_dusun = $this->api_model->list_dusun('');
+			$data['list_dusun'] = ($list_dusun);
+
+			$list_status_keluarga = $this->api_model->list_status_keluarga();
+			$data['list_status_keluarga'] = ($list_status_keluarga);
+
 			$data['title']  = "In Kelud - Mas Bup";
 			$data['title_h1']  = "In Kelud - Mas Bup";
 			$data['active_sidebar']  = "In Kelud";
 			$this->load->view('admin/dashboard', $data);
 		}
+	}
+
+	public function grafik_sejahtera()
+	{
+		$this->load->database();
+
+		$kecamatan = $this->input->post('kecamatan');
+		$desa = $this->input->post('desa');
+		$dusun = $this->input->post('dusun');
+		$rt = (int)$this->input->post('rt');
+		$rw = (int)$this->input->post('rw');
+
+		$this->db->select(
+			'sum(rekap.kk_pria_sejahtera) as kk_pria_sejahtera, '
+				. 'sum(rekap.kk_wanita_sejahtera) as kk_wanita_sejahtera,'
+				. 'sum(rekap.sejahtera) as total, '
+		);
+		$this->db->from('rekap');
+		$this->db->join('kecamatan', 'rekap.id_kecamatan = kecamatan.id');
+		$this->db->join('desa', 'rekap.id_desa = desa.id');
+		$this->db->join('dusun', 'rekap.id_dusun = dusun.id');
+
+		// add filter on kecamatan
+		if ($kecamatan != '') {
+			$this->db->where('rekap.id_kecamatan', $kecamatan);
+		}
+
+		// add filter on desa
+		if ($desa != '') {
+			$this->db->where('rekap.id_desa', $desa);
+		}
+
+		// add filter on dusun
+		if ($dusun != '') {
+			$this->db->where('rekap.id_dusun', $dusun);
+		}
+
+		// add filter on RT
+		if ($rt != 0) {
+			$this->db->where('rekap.rt', $rt);
+		}
+
+		// add filter on RW
+		if ($rw != 0) {
+			$this->db->where('rekap.rw', $rw);
+		}
+
+		$query = $this->db->get();
+		echo json_encode($query->row_array());
+	}
+
+	public function grafik_pra()
+	{
+		$this->load->database();
+
+		$kecamatan = $this->input->post('kecamatan');
+		$desa = $this->input->post('desa');
+		$dusun = $this->input->post('dusun');
+		$rt = (int)$this->input->post('rt');
+		$rw = (int)$this->input->post('rw');
+
+		$this->db->select(
+			'sum(rekap.kk_wanita_pra) as kk_wanita_pra, '
+				. 'sum(rekap.kk_pria_pra) as kk_pria_pra, '
+				. 'sum(rekap.pra_sejahtera) as total,'
+		);
+		$this->db->from('rekap');
+		$this->db->join('kecamatan', 'rekap.id_kecamatan = kecamatan.id');
+		$this->db->join('desa', 'rekap.id_desa = desa.id');
+		$this->db->join('dusun', 'rekap.id_dusun = dusun.id');
+
+		// add filter on kecamatan
+		if ($kecamatan != '') {
+			$this->db->where('rekap.id_kecamatan', $kecamatan);
+		}
+
+		// add filter on desa
+		if ($desa != '') {
+			$this->db->where('rekap.id_desa', $desa);
+		}
+
+		// add filter on dusun
+		if ($dusun != '') {
+			$this->db->where('rekap.id_dusun', $dusun);
+		}
+
+		// add filter on RT
+		if ($rt != 0) {
+			$this->db->where('rekap.rt', $rt);
+		}
+
+		// add filter on RW
+		if ($rw != 0) {
+			$this->db->where('rekap.rw', $rw);
+		}
+
+		$query = $this->db->get();
+		echo json_encode($query->row_array());
 	}
 
 	public function logout()
