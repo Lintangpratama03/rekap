@@ -31,25 +31,24 @@ class Home extends CI_Controller
 
 	public function index()
 	{
+		$this->load->database();
+		$this->load->model('api_model');
+
+		$list_kecamatan = $this->api_model->list_kecamatan();
+		$data['list_kecamatan'] = ($list_kecamatan);
+
+		$list_desa = $this->api_model->list_desa('');
+		$data['list_desa'] = ($list_desa);
+
+		$list_dusun = $this->api_model->list_dusun('');
+		$data['list_dusun'] = ($list_dusun);
+
+		$list_status_keluarga = $this->api_model->list_status_keluarga();
+		$data['list_status_keluarga'] = ($list_status_keluarga);
 		if (!$this->session->userdata('user_name')) {
 			$data['title']  = "In Kelud - Mas Bup";
 			$this->load->view('home/login', $data);
 		} else {
-			$this->load->database();
-			$this->load->model('api_model');
-
-			$list_kecamatan = $this->api_model->list_kecamatan();
-			$data['list_kecamatan'] = ($list_kecamatan);
-
-			$list_desa = $this->api_model->list_desa('');
-			$data['list_desa'] = ($list_desa);
-
-			$list_dusun = $this->api_model->list_dusun('');
-			$data['list_dusun'] = ($list_dusun);
-
-			$list_status_keluarga = $this->api_model->list_status_keluarga();
-			$data['list_status_keluarga'] = ($list_status_keluarga);
-
 			$data['title']  = "In Kelud - Mas Bup";
 			$data['title_h1']  = "In Kelud - Mas Bup";
 			$data['active_sidebar']  = "In Kelud";
@@ -191,6 +190,20 @@ class Home extends CI_Controller
 
 	public function inkelud()
 	{
+		$this->load->database();
+		$this->load->model('api_model');
+
+		$list_kecamatan = $this->api_model->list_kecamatan();
+		$data['list_kecamatan'] = ($list_kecamatan);
+
+		$list_desa = $this->api_model->list_desa('');
+		$data['list_desa'] = ($list_desa);
+
+		$list_dusun = $this->api_model->list_dusun('');
+		$data['list_dusun'] = ($list_dusun);
+
+		$list_status_keluarga = $this->api_model->list_status_keluarga();
+		$data['list_status_keluarga'] = ($list_status_keluarga);
 
 		if (!$this->session->userdata('user_name')) {
 			redirect();
