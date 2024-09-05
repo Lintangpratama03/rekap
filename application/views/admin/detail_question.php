@@ -118,7 +118,13 @@
         }
 
         function loadData(data) {
-            var rowData = "";
+            var rowData = [];
+            if ($.fn.DataTable.isDataTable('#table-data')) {
+                $('#table-data').DataTable().clear().destroy();
+            }
+            $("#table-data tbody").empty();
+
+            $(".ajax_status").show();
 
             currentRequest = $.ajax({
                 headers: {
@@ -134,20 +140,30 @@
                         if (data.hasOwnProperty(key)) {
                             var item = data[key];
                             var total = item.total !== undefined && item.total !== null ? item.total : "-";
-                            rowData += "<tr><td>" + counter + "</td><td>" + item.pilihan + "</td><td>" + total + "</td></tr>";
+                            rowData.push([counter, item.pilihan, total]);
                             counter++;
                         }
                     }
 
-                    $("#table-data tbody").append(rowData);
-
                     table = $('#table-data').DataTable({
+                        data: rowData,
+                        columns: [{
+                                title: "#"
+                            },
+                            {
+                                title: "Pilihan"
+                            },
+                            {
+                                title: "Total"
+                            }
+                        ],
                         columnDefs: [],
                         ordering: false,
+                        processing: true,
                         searching: false,
                         paging: false,
                         info: false,
-                        bDestroy: true,
+                        destroy: true,
                         dom: 'Bfrtip',
                     });
 
